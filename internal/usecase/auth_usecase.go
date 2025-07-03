@@ -15,10 +15,11 @@ import (
 )
 
 type AuthUseCase struct {
-	DB             *gorm.DB
-	Log            *logrus.Logger
-	JwtUtil        *utils.JwtUtil
-	UserRepository *repository.UserRepository
+	DB                      *gorm.DB
+	Log                     *logrus.Logger
+	JwtUtil                 *utils.JwtUtil
+	UserRepository          *repository.UserRepository
+	CustomerLimitRepository *repository.CustomerLimitRepository
 }
 
 func NewAuthUseCase(
@@ -26,12 +27,14 @@ func NewAuthUseCase(
 	log *logrus.Logger,
 	jwtUtil *utils.JwtUtil,
 	userRepository *repository.UserRepository,
+	customerLimitRepository *repository.CustomerLimitRepository,
 ) *AuthUseCase {
 	return &AuthUseCase{
-		DB:             db,
-		Log:            log,
-		JwtUtil:        jwtUtil,
-		UserRepository: userRepository,
+		DB:                      db,
+		Log:                     log,
+		JwtUtil:                 jwtUtil,
+		UserRepository:          userRepository,
+		CustomerLimitRepository: customerLimitRepository,
 	}
 }
 
@@ -127,10 +130,11 @@ func (a *AuthUseCase) SignUp(ctx context.Context, request *model.SignUpRequest) 
 	log.Trace("[BEGIN]")
 	log.WithField("request", request).Debug("request")
 
-	db := a.DB.WithContext(ctx)
+	tx := a.DB.WithContext(ctx).Begin()
+	defer tx.Rollback()
 
 	user := new(entity.User)
-	if err := a.UserRepository.GetByNIK(db, user, request.NIK); err != nil {
+	if err := a.UserRepository.GetByNIK(tx, user, request.NIK); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			// Do nothing, user does not exist
 		} else {
@@ -160,10 +164,23 @@ func (a *AuthUseCase) SignUp(ctx context.Context, request *model.SignUpRequest) 
 		Password:       password,
 	})
 
-	if err := a.UserRepository.Create(db, user); err != nil {
+	if err := a.UserRepository.Create(tx, user); err != nil {
+		log.WithError(err).Error("failed to create user")
 		panic(err)
 	}
 	log.WithField("user_id", user.ID).Info("user created successfully")
+
+	// Create customer limit for the user
+	customerLimit := user.CreateCustomerLimits()
+	if err := a.CustomerLimitRepository.CreateMany(tx, customerLimit); err != nil {
+		log.WithError(err).Error("failed to create customer limits")
+		panic(err)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		log.WithError(err).Error("failed to commit transaction")
+		panic(err)
+	}
 
 	log.Trace("[END]")
 

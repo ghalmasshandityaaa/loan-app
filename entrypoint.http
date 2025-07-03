@@ -3,7 +3,7 @@ POST http://localhost:3000/v1/auth/sign-in
 Content-Type: application/json
 
 {
-    "nik": "1234123412341234",
+    "nik": "1234123412341236",
     "password": "Password123!@#"
 }
 
@@ -18,7 +18,7 @@ POST http://localhost:3000/v1/auth/sign-up
 Content-Type: application/json
 
 {
-    "nik": "1234123412341234",
+    "nik": "1234123412341236",
     "full_name": "John Doe",
     "legal_name": "Johnathan Doe",
     "date_of_birth": "1990-01-01",
@@ -28,3 +28,14 @@ Content-Type: application/json
     "selfie_photo_url": "http://example.com/selfie.jpg",
     "password": "Password123!@#"
 }
+
+### Find User by ID
+GET http://localhost:3000/v1/user/me
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4NkRCWTZOWFJaUTNYSEU0WEJONUNYIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQxNDMwNDUsImlhdCI6MTc1MTU1MTA0NX0.DGVznj0MeYEurrR2HtO9akT-3eY2WgAzEBAgRYXDJ8g
+
+
+### Find User Limits
+GET http://localhost:3000/v1/user/limit
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4Rk1HR1dBRjExR01RSzZLMk5CV1BZIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQxNDk4MjQsImlhdCI6MTc1MTU1NzgyNH0.jmAPIp-RyH45emuPZ5bhz-g7mfehiQZ_fhr1JlT5ToI

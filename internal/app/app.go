@@ -29,10 +29,11 @@ func Bootstrap(config *BootstrapConfig) {
 
 	// init repositories
 	userRepository := repository.NewUserRepository(config.Log)
+	customerLimitRepository := repository.NewCustomerLimitRepository(config.Log)
 
 	// init use cases
-	authUseCase := usecase.NewAuthUseCase(config.DB, config.Log, jwtUtil, userRepository)
-	userUseCase := usecase.NewUserUseCase(config.DB, config.Log, userRepository)
+	authUseCase := usecase.NewAuthUseCase(config.DB, config.Log, jwtUtil, userRepository, customerLimitRepository)
+	userUseCase := usecase.NewUserUseCase(config.DB, config.Log, userRepository, customerLimitRepository)
 
 	// init handlers
 	authHandler := handler.NewAuthHandler(authUseCase, config.Log, config.Config, config.Validator)

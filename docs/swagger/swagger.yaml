@@ -1,5 +1,33 @@
 basePath: /v1
 definitions:
+  model.CustomerLimitWrapper:
+    properties:
+      available_amount:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: string
+      limit_amount:
+        type: integer
+      tenor:
+        type: integer
+      updated_at:
+        type: string
+      used_amount:
+        type: integer
+      user_id:
+        type: string
+    type: object
+  model.FindCustomerLimitWrapper:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.CustomerLimitWrapper'
+        type: array
+      ok:
+        type: boolean
+    type: object
   model.FindSelfResponseWrapper:
     properties:
       data:
@@ -160,6 +188,23 @@ paths:
       summary: Sign up user
       tags:
       - Authentication
+  /user/limit:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the customer limits for the authenticated user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FindCustomerLimitWrapper'
+      security:
+      - bearer: []
+      summary: Find Customer Limits
+      tags:
+      - User
   /user/me:
     get:
       consumes:

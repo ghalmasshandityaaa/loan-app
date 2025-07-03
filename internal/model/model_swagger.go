@@ -34,3 +34,19 @@ type FindSelfResponseWrapper struct {
 	Ok   bool
 	Data UserWrapper
 }
+
+type CustomerLimitWrapper struct {
+	ID              string     `json:"id"`
+	UserID          string     `json:"user_id"`
+	Tenor           int8       `json:"tenor"`
+	LimitAmount     int64      `json:"limit_amount"`
+	UsedAmount      int64      `json:"used_amount"`
+	AvailableAmount int64      `json:"available_amount"`
+	CreatedAt       time.Time  `json:"created_at"`
+	UpdatedAt       *time.Time `json:"updated_at"`
+}
+
+type FindCustomerLimitWrapper struct {
+	Ok   bool
+	Data []CustomerLimitWrapper
+}

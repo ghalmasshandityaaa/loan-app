@@ -58,3 +58,18 @@ func NewUser(props *CreateUserProps) *User {
 func (e *User) TableName() string {
 	return "users"
 }
+
+func (e *User) CreateCustomerLimits() []CustomerLimit {
+	limits := make([]CustomerLimit, 0, 4) // Pre-allocate for 4 months tenors
+	for _, tenor := range []int8{1, 2, 3, 4} {
+		limitAmount := int64(50+(tenor*10)) * e.Salary / 100 // 50% of salary + 10% for each month tenor
+		limits = append(limits, *NewCustomerLimit(&CreateCustomerLimitProps{
+			UserID:          e.ID,
+			Tenor:           tenor,
+			LimitAmount:     limitAmount,
+			UsedAmount:      0,
+			AvailableAmount: limitAmount,
+		}))
+	}
+	return limits
+}

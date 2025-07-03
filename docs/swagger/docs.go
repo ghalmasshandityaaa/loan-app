@@ -87,6 +87,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/limit": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Retrieve the customer limits for the authenticated user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Find Customer Limits",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FindCustomerLimitWrapper"
+                        }
+                    }
+                }
+            }
+        },
         "/user/me": {
             "get": {
                 "security": [
@@ -117,6 +145,49 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.CustomerLimitWrapper": {
+            "type": "object",
+            "properties": {
+                "available_amount": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "limit_amount": {
+                    "type": "integer"
+                },
+                "tenor": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "used_amount": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.FindCustomerLimitWrapper": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.CustomerLimitWrapper"
+                    }
+                },
+                "ok": {
+                    "type": "boolean"
+                }
+            }
+        },
         "model.FindSelfResponseWrapper": {
             "type": "object",
             "properties": {

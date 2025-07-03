@@ -15,6 +15,14 @@ func (r *Repository[T]) Create(db *gorm.DB, entity *T) error {
 	return db.Debug().Create(entity).Error
 }
 
+func (r *Repository[T]) CreateMany(db *gorm.DB, entities []T) error {
+	if len(entities) == 0 {
+		return nil // No entities to create
+	}
+	// Use Debug() for detailed logging during development
+	return db.Debug().Create(entities).Error
+}
+
 func (r *Repository[T]) Update(db *gorm.DB, entity *T) error {
 	return db.Debug().Save(entity).Error
 }

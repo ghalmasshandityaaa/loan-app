@@ -10,7 +10,7 @@ import (
 
 type CustomerLimit struct {
 	ID              gorm.ULID  `json:"id" gorm:"column:id;type:ulid;primaryKey"`
-	UserID          gorm.ULID  `json:"nik" gorm:"column:nik;size:16;not null"`
+	UserID          gorm.ULID  `json:"user_id" gorm:"column:user_id;not null"`
 	Tenor           int8       `json:"tenor" gorm:"column:tenor;type:smallint;not null"`
 	LimitAmount     int64      `json:"limit_amount" gorm:"column:limit_amount;type:bigint;not null"`
 	UsedAmount      int64      `json:"used_amount" gorm:"column:used_amount;type:bigint;not null;default:0"`

@@ -64,3 +64,35 @@ func (h *UserHandler) FindSelf(ctx *fiber.Ctx) error {
 		Data: user,
 	})
 }
+
+// FindLimits retrieves the customer limits for the authenticated user.
+// @Summary Find Customer Limits
+// @Description Retrieve the customer limits for the authenticated user.
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security bearer
+// @Router /user/limit [get]
+// @Success 200 {object} model.FindCustomerLimitWrapper
+func (h *UserHandler) FindLimits(ctx *fiber.Ctx) error {
+	method := "UserHandler.FindLimits"
+	log := h.Log.WithField("method", method)
+	log.Trace("[BEGIN]")
+
+	auth := middleware.GetAuth(ctx)
+	requestCtx := ctx.UserContext()
+	limits, err := h.UseCase.FindLimits(requestCtx, auth.ID)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(model.WebResponse[any]{
+			Ok:     false,
+			Errors: err.Error(),
+		})
+	}
+
+	log.Trace("[END]")
+
+	return ctx.JSON(model.WebResponseWithData[[]entity.CustomerLimit]{
+		Ok:   true,
+		Data: limits,
+	})
+}

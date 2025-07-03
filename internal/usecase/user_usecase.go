@@ -13,20 +13,23 @@ import (
 )
 
 type UserUseCase struct {
-	DB             *gorm.DB
-	Log            *logrus.Logger
-	UserRepository *repository.UserRepository
+	DB                      *gorm.DB
+	Log                     *logrus.Logger
+	UserRepository          *repository.UserRepository
+	CustomerLimitRepository *repository.CustomerLimitRepository
 }
 
 func NewUserUseCase(
 	db *gorm.DB,
 	log *logrus.Logger,
 	userRepository *repository.UserRepository,
+	customerLimitRepository *repository.CustomerLimitRepository,
 ) *UserUseCase {
 	return &UserUseCase{
-		DB:             db,
-		Log:            log,
-		UserRepository: userRepository,
+		DB:                      db,
+		Log:                     log,
+		UserRepository:          userRepository,
+		CustomerLimitRepository: customerLimitRepository,
 	}
 }
 
@@ -50,20 +53,19 @@ func (a *UserUseCase) GetById(ctx context.Context, id ulid.ULID) (*entity.User, 
 	return user, nil
 }
 
-func GetByNIK(ctx context.Context, db *gorm.DB, nik string) (*entity.User, error) {
-	method := "UserUseCase.GetByNIK"
+func (a *UserUseCase) FindLimits(ctx context.Context, userID ulid.ULID) ([]entity.CustomerLimit, error) {
+	method := "UserUseCase.GetById"
 	log := logrus.WithField("method", method)
 	log.Trace("[BEGIN]")
-	log.WithField("request", nik).Debug("request")
+	log.WithField("request", userID).Debug("request")
 
-	user := new(entity.User)
-	if err := db.WithContext(ctx).Where("nik = ?", nik).First(user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, fmt.Errorf("user/not-found")
-		}
+	db := a.DB.WithContext(ctx)
+
+	limits := make([]entity.CustomerLimit, 0)
+	if err := a.CustomerLimitRepository.ListUserLimits(db, &limits, userID); err != nil {
 		panic(err)
 	}
 
-	log.Trace("[END]")
-	return user, nil
+	a.Log.Trace("[END]")
+	return limits, nil
 }
