@@ -3,7 +3,7 @@ POST http://localhost:3000/v1/auth/sign-in
 Content-Type: application/json
 
 {
-    "nik": "1234123412341236",
+    "nik": "1234123412341231",
     "password": "Password123!@#"
 }
 
@@ -32,10 +32,25 @@ Content-Type: application/json
 ### Find User by ID
 GET http://localhost:3000/v1/user/me
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4NkRCWTZOWFJaUTNYSEU0WEJONUNYIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQxNDMwNDUsImlhdCI6MTc1MTU1MTA0NX0.DGVznj0MeYEurrR2HtO9akT-3eY2WgAzEBAgRYXDJ8g
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4NkRCWTZOWFJaUTNYSEU0WEJONUNYIiwiaXNfYWRtaW4iOnRydWUsImV4cCI6MTc1NDE1NTk0NCwiaWF0IjoxNzUxNTYzOTQ0fQ.AJsrOk5DQI_OR0T48eQPy1OHAqd0rV5s9ER4YY8wwP4
 
 
 ### Find User Limits
 GET http://localhost:3000/v1/user/limit
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4Rk1HR1dBRjExR01RSzZLMk5CV1BZIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQxNDk4MjQsImlhdCI6MTc1MTU1NzgyNH0.jmAPIp-RyH45emuPZ5bhz-g7mfehiQZ_fhr1JlT5ToI
+
+### Find Partners
+GET http://localhost:3000/v1/partner
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4NkRCWTZOWFJaUTNYSEU0WEJONUNYIiwiaXNfYWRtaW4iOnRydWUsImV4cCI6MTc1NDE1NTk0NCwiaWF0IjoxNzUxNTYzOTQ0fQ.AJsrOk5DQI_OR0T48eQPy1OHAqd0rV5s9ER4YY8wwP4
+
+### Create Partners
+POST http://localhost:3000/v1/partner
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4NkRCWTZOWFJaUTNYSEU0WEJONUNYIiwiaXNfYWRtaW4iOnRydWUsImV4cCI6MTc1NDE1NTk0NCwiaWF0IjoxNzUxNTYzOTQ0fQ.AJsrOk5DQI_OR0T48eQPy1OHAqd0rV5s9ER4YY8wwP4
+
+{
+    "name": "Dealer 1",
+    "type": "dealer"
+}

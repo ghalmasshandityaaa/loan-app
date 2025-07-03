@@ -13,6 +13,7 @@ type Route struct {
 	AuthMiddleware fiber.Handler
 	AuthHandler    *handler.AuthHandler
 	UserHandler    *handler.UserHandler
+	PartnerHandler *handler.PartnerHandler
 }
 
 func NewRoute(
@@ -21,6 +22,7 @@ func NewRoute(
 	authMiddleware fiber.Handler,
 	authHandler *handler.AuthHandler,
 	userHandler *handler.UserHandler,
+	partnerHandler *handler.PartnerHandler,
 ) *Route {
 	return &Route{
 		App:            app,
@@ -28,6 +30,7 @@ func NewRoute(
 		AuthMiddleware: authMiddleware,
 		AuthHandler:    authHandler,
 		UserHandler:    userHandler,
+		PartnerHandler: partnerHandler,
 	}
 }
 
@@ -36,5 +39,6 @@ func (a *Route) Setup() {
 
 	a.SetupAuthRoute()
 	a.SetupUserRoute()
+	a.SetupPartnerRoute()
 	a.SetupSwaggerRoute()
 }
