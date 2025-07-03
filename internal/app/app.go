@@ -36,14 +36,18 @@ func Bootstrap(config *BootstrapConfig) {
 
 	// init handlers
 	authHandler := handler.NewAuthHandler(authUseCase, config.Log, config.Config, config.Validator)
+	userHandler := handler.NewUserHandler(userUseCase, config.Log, config.Config, config.Validator)
 
 	// init middleware
 	authMiddleware := middleware.NewAuthMiddleware(userUseCase, jwtUtil)
 
 	// init routes
 	appRoute := route.NewRoute(
-		config.App, config.Log, authMiddleware,
+		config.App,
+		config.Log,
+		authMiddleware,
 		authHandler,
+		userHandler,
 	)
 
 	// setup routes

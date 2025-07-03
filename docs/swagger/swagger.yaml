@@ -1,5 +1,12 @@
 basePath: /v1
 definitions:
+  model.FindSelfResponseWrapper:
+    properties:
+      data:
+        $ref: '#/definitions/model.UserWrapper'
+      ok:
+        type: boolean
+    type: object
   model.SignInRequest:
     properties:
       nik:
@@ -71,6 +78,33 @@ definitions:
       ok:
         type: boolean
     type: object
+  model.UserWrapper:
+    properties:
+      created_at:
+        type: string
+      date_of_birth:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: string
+      id_card_photo_url:
+        type: string
+      is_admin:
+        type: boolean
+      legal_name:
+        type: string
+      nik:
+        type: string
+      place_of_birth:
+        type: string
+      salary:
+        type: integer
+      selfie_photo_url:
+        type: string
+      updated_at:
+        type: string
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -126,6 +160,23 @@ paths:
       summary: Sign up user
       tags:
       - Authentication
+  /user/me:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the authenticated user's information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FindSelfResponseWrapper'
+      security:
+      - bearer: []
+      summary: Find Self User
+      tags:
+      - User
 schemes:
 - http
 - https

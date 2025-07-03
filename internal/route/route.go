@@ -12,6 +12,7 @@ type Route struct {
 	Log            *logrus.Logger
 	AuthMiddleware fiber.Handler
 	AuthHandler    *handler.AuthHandler
+	UserHandler    *handler.UserHandler
 }
 
 func NewRoute(
@@ -19,12 +20,14 @@ func NewRoute(
 	logger *logrus.Logger,
 	authMiddleware fiber.Handler,
 	authHandler *handler.AuthHandler,
+	userHandler *handler.UserHandler,
 ) *Route {
 	return &Route{
 		App:            app,
 		Log:            logger,
 		AuthMiddleware: authMiddleware,
 		AuthHandler:    authHandler,
+		UserHandler:    userHandler,
 	}
 }
 
@@ -32,5 +35,6 @@ func (a *Route) Setup() {
 	a.Log.Info("setting up routes")
 
 	a.SetupAuthRoute()
+	a.SetupUserRoute()
 	a.SetupSwaggerRoute()
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/oklog/ulid/v2"
 )
 
+// swagger:model User
 type User struct {
 	ID             gorm.ULID  `json:"id" gorm:"column:id;type:ulid;primaryKey"`
 	NIK            string     `json:"nik" gorm:"column:nik;size:16;not null;unique"`
@@ -50,6 +51,7 @@ func NewUser(props *CreateUserProps) *User {
 		Password:       props.Password,
 		IsAdmin:        false,
 		CreatedAt:      time.Now(),
+		UpdatedAt:      nil,
 	}
 }
 
