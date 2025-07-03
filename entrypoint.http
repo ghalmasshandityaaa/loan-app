@@ -43,14 +43,29 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4Rk1HR
 ### Find Partners
 GET http://localhost:3000/v1/partner
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4NkRCWTZOWFJaUTNYSEU0WEJONUNYIiwiaXNfYWRtaW4iOnRydWUsImV4cCI6MTc1NDE1NTk0NCwiaWF0IjoxNzUxNTYzOTQ0fQ.AJsrOk5DQI_OR0T48eQPy1OHAqd0rV5s9ER4YY8wwP4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4RDhXQ1RIN05FS1dNRVRWSkdUQUZFIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQxNTY0NjgsImlhdCI6MTc1MTU2NDQ2OH0.5WliJGP3JRNN6mv0KnghgqRH7_FkUoLws6jw3TELgzI
 
-### Create Partners
+### Create Partner
 POST http://localhost:3000/v1/partner
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4NkRCWTZOWFJaUTNYSEU0WEJONUNYIiwiaXNfYWRtaW4iOnRydWUsImV4cCI6MTc1NDE1NTk0NCwiaWF0IjoxNzUxNTYzOTQ0fQ.AJsrOk5DQI_OR0T48eQPy1OHAqd0rV5s9ER4YY8wwP4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4RDhXQ1RIN05FS1dNRVRWSkdUQUZFIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQxNTY0NjgsImlhdCI6MTc1MTU2NDQ2OH0.5WliJGP3JRNN6mv0KnghgqRH7_FkUoLws6jw3TELgzI
 
 {
     "name": "Dealer 1",
     "type": "dealer"
+}
+### Find Assets
+GET http://localhost:3000/v1/asset
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4RDhXQ1RIN05FS1dNRVRWSkdUQUZFIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQxNTY0NjgsImlhdCI6MTc1MTU2NDQ2OH0.5WliJGP3JRNN6mv0KnghgqRH7_FkUoLws6jw3TELgzI
+
+### Create Asset
+POST http://localhost:3000/v1/asset
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4NkRCWTZOWFJaUTNYSEU0WEJONUNYIiwiaXNfYWRtaW4iOnRydWUsImV4cCI6MTc1NDE1OTIzNSwiaWF0IjoxNzUxNTY3MjM1fQ.yHB-FgFrxuGKoyRDn7szi_k5bklOfVCvVT9aRNSwYt8
+
+{
+    "name": "Asset Dealer 1",
+    "price": 10000000,
+    "partner_id": "01JZ8P0BE7KPHGD2WV8GAP6K1W"
 }

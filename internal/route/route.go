@@ -14,6 +14,7 @@ type Route struct {
 	AuthHandler    *handler.AuthHandler
 	UserHandler    *handler.UserHandler
 	PartnerHandler *handler.PartnerHandler
+	AssetHandler   *handler.AssetHandler
 }
 
 func NewRoute(
@@ -23,6 +24,7 @@ func NewRoute(
 	authHandler *handler.AuthHandler,
 	userHandler *handler.UserHandler,
 	partnerHandler *handler.PartnerHandler,
+	assetHandler *handler.AssetHandler,
 ) *Route {
 	return &Route{
 		App:            app,
@@ -31,6 +33,7 @@ func NewRoute(
 		AuthHandler:    authHandler,
 		UserHandler:    userHandler,
 		PartnerHandler: partnerHandler,
+		AssetHandler:   assetHandler,
 	}
 }
 
@@ -40,5 +43,6 @@ func (a *Route) Setup() {
 	a.SetupAuthRoute()
 	a.SetupUserRoute()
 	a.SetupPartnerRoute()
+	a.SetupAssetRoute()
 	a.SetupSwaggerRoute()
 }

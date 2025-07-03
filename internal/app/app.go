@@ -31,16 +31,19 @@ func Bootstrap(config *BootstrapConfig) {
 	userRepository := repository.NewUserRepository(config.Log)
 	customerLimitRepository := repository.NewCustomerLimitRepository(config.Log)
 	partnerRepository := repository.NewPartnerRepository(config.Log)
+	assetRepository := repository.NewAssetRepository(config.Log)
 
 	// init use cases
 	authUseCase := usecase.NewAuthUseCase(config.DB, config.Log, jwtUtil, userRepository, customerLimitRepository)
 	userUseCase := usecase.NewUserUseCase(config.DB, config.Log, userRepository, customerLimitRepository)
 	partnerUseCase := usecase.NewPartnerUseCase(config.DB, config.Log, partnerRepository)
+	assetUseCase := usecase.NewAssetUseCase(config.DB, config.Log, assetRepository, partnerRepository)
 
 	// init handlers
 	authHandler := handler.NewAuthHandler(authUseCase, config.Log, config.Config, config.Validator)
 	userHandler := handler.NewUserHandler(userUseCase, config.Log, config.Config, config.Validator)
 	partnerHandler := handler.NewPartnerHandler(partnerUseCase, config.Log, config.Config, config.Validator)
+	assetHandler := handler.NewAssetHandler(assetUseCase, config.Log, config.Config, config.Validator)
 
 	// init middleware
 	authMiddleware := middleware.NewAuthMiddleware(userUseCase, jwtUtil)
@@ -53,6 +56,7 @@ func Bootstrap(config *BootstrapConfig) {
 		authHandler,
 		userHandler,
 		partnerHandler,
+		assetHandler,
 	)
 
 	// setup routes
