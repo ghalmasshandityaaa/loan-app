@@ -1,0 +1,14 @@
+# AIR temp data
+/build
+/bin
+
+# Environment
+.env
+
+# Air binaries
+tmp
+
+# backup files
+.go~
+*~
+'*~'

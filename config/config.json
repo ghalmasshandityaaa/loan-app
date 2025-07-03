@@ -1,0 +1,71 @@
+{
+    "App": {
+        "Name": "Loan App API",
+        "Version": "1.0.0",
+        "Domain": "localhost",
+        "Host": "0.0.0.0",
+        "Port": 3000,
+        "Env": "Production",
+        "Debug": true,
+        "ReadTimeout": 5,
+        "WriteTimeout": 5,
+        "Prefork": false,
+        "SSL": true
+    },
+    "Security": {
+        "CORS": {
+            "AllowedOrigins": "http://localhost",
+            "AllowedMethods": "GET,POST,PUT,DELETE,OPTIONS",
+            "AllowCredentials": true
+        },
+        "CSRF": {
+            "Enabled": true,
+            "CookieName": "loan_app_api_csrf",
+            "HeaderName": "X-CSRF-Token"
+        },
+        "JWT": {
+            "Issuer": "https://loan-app.com",
+            "Audience": "https://loan-app.com",
+            "Subject": "loan_app_api",
+            "SigningMethod": "HS256",
+            "AccessTokenLifetime": 720,
+            "AccessTokenSecret": "apaajayangpentingaman",
+            "RefreshTokenLifetime": 720,
+            "RefreshTokenSecret": "namagnitnepgnayajaapa"
+        },
+        "RateLimit": {
+            "Duration": 60,
+            "MaxRequests": 100
+        },
+        "Crypto": {
+            "Key": "suksesadalahpedomankitabersamaya"
+        },
+        "Cookie": {
+            "Name": "SHR-Cookie",
+            "Secure": true,
+            "HttpOnly": true,
+            "SameSite": "Lax",
+            "Domain": "localhost",
+            "MaxAge": 518400,
+            "Key": "buldjhSPzLpCxleTOlv4hzLkXtvbfnuvMtPS8DM+oKQ="
+        }
+    },
+    "Logger": {
+        "Level": 6,
+        "Pretty": false
+    },
+    "Database": {
+        "ConnMaxIdleTime": 30,
+        "ConnMaxLifetime": 3600,
+        "MaxIdleCons": 10,
+        "MaxOpenCons": 25,
+        "User": "avnadmin",
+        "Password": "AVNS_-wk8zD1Ll7Yq5suRH8T",
+        "Host": "mysql-playground-ghalmas-lab.c.aivencloud.com",
+        "Port": 10634,
+        "Dbname": "loan",
+        "Driver": "mysql",
+        "SSLMode": true,
+        "DryRun": false
+    }
+}

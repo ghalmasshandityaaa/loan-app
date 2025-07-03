@@ -1,0 +1,80 @@
+basePath: /v1
+definitions:
+  model.SignInRequest:
+    properties:
+      password:
+        description: |-
+          Password for authentication (must be strong password)
+          required: true
+          example: "StrongP@ssw0rd123"
+        type: string
+      username:
+        description: |-
+          Username for authentication (4-100 characters)
+          required: true
+          min: 4
+          max: 100
+          example: "john.doe"
+        maxLength: 100
+        minLength: 4
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.SignInResponse:
+    properties:
+      access_token:
+        description: |-
+          JWT access token for API authentication
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        type: string
+      refresh_token:
+        description: |-
+          JWT refresh token for obtaining new access tokens
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: ghalmas.shanditya.putra.agung@gmail.com
+    name: Ghalmas Shanditya Putra Agung
+  description: This is a sample server for a Loan Application.
+  termsOfService: http://swagger.io/terms/
+  title: Loan App API
+  version: "1.0"
+paths:
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with username and password to get access and
+        refresh tokens
+      parameters:
+      - description: Sign in credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SignInResponse'
+      summary: Sign in user
+      tags:
+      - Authentication
+schemes:
+- http
+- https
+securityDefinitions:
+  bearer:
+    description: Enter the token with the `Bearer ` prefix, e.g. "Bearer abcde12345"
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
