@@ -19,7 +19,7 @@
     "paths": {
         "/auth/sign-in": {
             "post": {
-                "description": "Authenticate user with username and password to get access and refresh tokens",
+                "description": "Authenticate user with nik and password to get access and refresh tokens",
                 "consumes": [
                     "application/json"
                 ],
@@ -45,7 +45,41 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.SignInResponse"
+                            "$ref": "#/definitions/model.SignInResponseWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/sign-up": {
+            "post": {
+                "description": "Register a new user with nik, full_name, and other details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Sign up user",
+                "parameters": [
+                    {
+                        "description": "Sign up credentials",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SignUpRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SignUpResponseWrapper"
                         }
                     }
                 }
@@ -56,19 +90,15 @@
         "model.SignInRequest": {
             "type": "object",
             "required": [
-                "password",
-                "username"
+                "nik",
+                "password"
             ],
             "properties": {
-                "password": {
-                    "description": "Password for authentication (must be strong password)\nrequired: true\nexample: \"StrongP@ssw0rd123\"",
+                "nik": {
                     "type": "string"
                 },
-                "username": {
-                    "description": "Username for authentication (4-100 characters)\nrequired: true\nmin: 4\nmax: 100\nexample: \"john.doe\"",
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 4
+                "password": {
+                    "type": "string"
                 }
             }
         },
@@ -76,12 +106,85 @@
             "type": "object",
             "properties": {
                 "access_token": {
-                    "description": "JWT access token for API authentication\nexample: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\"",
                     "type": "string"
                 },
                 "refresh_token": {
-                    "description": "JWT refresh token for obtaining new access tokens\nexample: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\"",
                     "type": "string"
+                }
+            }
+        },
+        "model.SignInResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.SignInResponse"
+                },
+                "ok": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.SignUpRequest": {
+            "type": "object",
+            "required": [
+                "date_of_birth",
+                "full_name",
+                "id_card_photo_url",
+                "legal_name",
+                "nik",
+                "password",
+                "place_of_birth",
+                "salary",
+                "selfie_photo_url"
+            ],
+            "properties": {
+                "date_of_birth": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3
+                },
+                "id_card_photo_url": {
+                    "type": "string"
+                },
+                "legal_name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3
+                },
+                "nik": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "place_of_birth": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2
+                },
+                "salary": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "selfie_photo_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SignUpResponse": {
+            "type": "object"
+        },
+        "model.SignUpResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.SignUpResponse"
+                },
+                "ok": {
+                    "type": "boolean"
                 }
             }
         }

@@ -3,7 +3,7 @@ POST http://localhost:3000/v1/auth/sign-in
 Content-Type: application/json
 
 {
-    "username": "user",
+    "nik": "1234123412341234",
     "password": "Password123!@#"
 }
 
@@ -12,3 +12,19 @@ Content-Type: application/json
 #   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
 #   "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 # }
+
+### Sign Up
+POST http://localhost:3000/v1/auth/sign-up
+Content-Type: application/json
+
+{
+    "nik": "1234123412341234",
+    "full_name": "John Doe",
+    "legal_name": "Johnathan Doe",
+    "date_of_birth": "1990-01-01",
+    "place_of_birth": "Cityville",
+    "salary": 5000000,
+    "id_card_photo_url": "http://example.com/id_card.jpg",
+    "selfie_photo_url": "http://example.com/selfie.jpg",
+    "password": "Password123!@#"
+}

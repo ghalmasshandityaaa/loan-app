@@ -33,16 +33,17 @@ func NewAuthHandler(
 
 // SignIn authenticates a user and returns access and refresh tokens
 // @Summary Sign in user
-// @Description Authenticate user with username and password to get access and refresh tokens
+// @Description Authenticate user with nik and password to get access and refresh tokens
 // @Tags Authentication
 // @Accept json
 // @Produce json
 // @Param request body model.SignInRequest true "Sign in credentials"
 // @Router /auth/sign-in [post]
-// @Success 200 {object} model.SignInResponse
+// @Success 200 {object} model.SignInResponseWrapper
 func (h *AuthHandler) SignIn(ctx *fiber.Ctx) error {
 	method := "AuthHandler.SignIn"
-	h.Log.WithField("method", method).Trace("[BEGIN]")
+	log := h.Log.WithField("method", method)
+	log.Trace("[BEGIN]")
 
 	request := new(model.SignInRequest)
 	if err := ctx.BodyParser(request); err != nil {
@@ -57,7 +58,6 @@ func (h *AuthHandler) SignIn(ctx *fiber.Ctx) error {
 		})
 	}
 
-	// Create context with request_id
 	requestCtx := ctx.UserContext()
 	accessToken, refreshToken, err := h.UseCase.SignIn(requestCtx, request)
 	if err != nil {
@@ -67,7 +67,7 @@ func (h *AuthHandler) SignIn(ctx *fiber.Ctx) error {
 		})
 	}
 
-	h.Log.WithField("method", method).Trace("[END]")
+	log.Trace("[END]")
 
 	return ctx.JSON(model.WebResponse[*model.SignInResponse]{
 		Ok: true,
@@ -75,5 +75,47 @@ func (h *AuthHandler) SignIn(ctx *fiber.Ctx) error {
 			AccessToken:  accessToken,
 			RefreshToken: refreshToken,
 		},
+	})
+}
+
+// SignUp registers a new user and returns a success response
+// @Summary Sign up user
+// @Description Register a new user with nik, full_name, and other details
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body model.SignUpRequest true "Sign up credentials"
+// @Router /auth/sign-up [post]
+// @Success 200 {object} model.SignUpResponseWrapper
+func (h *AuthHandler) SignUp(ctx *fiber.Ctx) error {
+	method := "AuthHandler.SignUp"
+	log := h.Log.WithField("method", method)
+	log.Trace("[BEGIN]")
+
+	request := new(model.SignUpRequest)
+	if err := ctx.BodyParser(request); err != nil {
+		return fiber.ErrBadRequest
+	}
+
+	errValidation := h.Validator.ValidateStruct(request)
+	if errValidation != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(model.WebResponse[*model.SignUpResponse]{
+			Ok:     false,
+			Errors: errValidation,
+		})
+	}
+
+	requestCtx := ctx.UserContext()
+	if err := h.UseCase.SignUp(requestCtx, request); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(model.WebResponse[any]{
+			Ok:     false,
+			Errors: err.Error(),
+		})
+	}
+
+	log.Trace("[END]")
+
+	return ctx.JSON(model.WebResponse[*model.SignUpResponse]{
+		Ok: true,
 	})
 }

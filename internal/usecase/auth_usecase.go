@@ -8,6 +8,7 @@ import (
 	"loan-app/internal/model"
 	"loan-app/internal/repository"
 	"loan-app/internal/utils"
+	"time"
 
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -36,13 +37,14 @@ func NewAuthUseCase(
 
 func (a *AuthUseCase) SignIn(ctx context.Context, request *model.SignInRequest) (string, string, error) {
 	method := "AuthUseCase.SignIn"
-	a.Log.WithField("method", method).Trace("[BEGIN]")
-	a.Log.WithField("method", method).WithField("request", request).Debug("request")
+	log := a.Log.WithField("method", method)
+	log.Trace("[BEGIN]")
+	log.WithField("request", request).Debug("request")
 
 	db := a.DB.WithContext(ctx)
 
 	user := new(entity.User)
-	if err := a.UserRepository.GetByUsername(db, user, request.Username); err != nil {
+	if err := a.UserRepository.GetByNIK(db, user, request.NIK); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return "", "", fmt.Errorf("user/not-found")
 		}
@@ -51,11 +53,11 @@ func (a *AuthUseCase) SignIn(ctx context.Context, request *model.SignInRequest) 
 
 	match := utils.ComparePassword(request.Password, user.Password)
 	if !match {
-		a.Log.WithContext(ctx).Error("password mismatch")
+		a.Log.Error("password mismatch")
 		return "", "", fmt.Errorf("auth/password-mismatch")
 	}
 
-	a.Log.WithContext(ctx).Debug("Password match, generating tokens...")
+	a.Log.Debug("Password match, generating tokens...")
 
 	// Use goroutines to generate access and refresh tokens in parallel
 	type tokenResult struct {
@@ -87,14 +89,14 @@ func (a *AuthUseCase) SignIn(ctx context.Context, request *model.SignInRequest) 
 		select {
 		case result := <-accessTokenChan:
 			if result.err != nil {
-				a.Log.WithContext(ctx).WithError(result.err).Error("failed to generate access token")
+				a.Log.WithError(result.err).Error("failed to generate access token")
 				accessErr = fmt.Errorf("internal/server-error")
 			} else {
 				accessToken = result.token
 			}
 		case result := <-refreshTokenChan:
 			if result.err != nil {
-				a.Log.WithContext(ctx).WithError(result.err).Error("failed to generate refresh token")
+				a.Log.WithError(result.err).Error("failed to generate refresh token")
 				refreshErr = fmt.Errorf("internal/server-error")
 			} else {
 				refreshToken = result.token
@@ -104,7 +106,7 @@ func (a *AuthUseCase) SignIn(ctx context.Context, request *model.SignInRequest) 
 		}
 	}
 
-	a.Log.WithContext(ctx).Debug("Tokens generated successfully, checking for errors...")
+	a.Log.Debug("Tokens generated successfully, checking for errors...")
 
 	// Check for error
 	if accessErr != nil {
@@ -114,7 +116,56 @@ func (a *AuthUseCase) SignIn(ctx context.Context, request *model.SignInRequest) 
 		return "", "", refreshErr
 	}
 
-	a.Log.WithContext(ctx).WithField("method", method).Trace("[END]")
+	log.Trace("[END]")
 
 	return accessToken, refreshToken, nil
+}
+
+func (a *AuthUseCase) SignUp(ctx context.Context, request *model.SignUpRequest) error {
+	method := "AuthUseCase.SignUp"
+	log := a.Log.WithField("method", method)
+	log.Trace("[BEGIN]")
+	log.WithField("request", request).Debug("request")
+
+	db := a.DB.WithContext(ctx)
+
+	user := new(entity.User)
+	if err := a.UserRepository.GetByNIK(db, user, request.NIK); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// Do nothing, user does not exist
+		} else {
+			panic(err)
+		}
+	} else {
+		log.Error("user already exists")
+		return fmt.Errorf("user/already-exists")
+	}
+
+	dateOfBirth, _ := time.Parse("2006-01-02", request.DateOfBirth)
+	password, err := utils.HashPassword(request.Password)
+	if err != nil {
+		log.WithError(err).Error("failed to hash password")
+		panic(err)
+	}
+
+	user = entity.NewUser(&entity.CreateUserProps{
+		NIK:            request.NIK,
+		FullName:       request.FullName,
+		LegalName:      request.LegalName,
+		PlaceOfBirth:   request.PlaceOfBirth,
+		DateOfBirth:    dateOfBirth,
+		Salary:         request.Salary,
+		IDCardPhotoURL: request.IDCardPhotoURL,
+		SelfiePhotoURL: request.SelfiePhotoURL,
+		Password:       password,
+	})
+
+	if err := a.UserRepository.Create(db, user); err != nil {
+		panic(err)
+	}
+	log.WithField("user_id", user.ID).Info("user created successfully")
+
+	log.Trace("[END]")
+
+	return nil
 }

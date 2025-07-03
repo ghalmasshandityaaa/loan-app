@@ -32,8 +32,9 @@ func NewUserUseCase(
 
 func (a *UserUseCase) GetById(ctx context.Context, id ulid.ULID) (*entity.User, error) {
 	method := "UserUseCase.GetById"
-	a.Log.WithField("method", method).Trace("[BEGIN]")
-	a.Log.WithField("method", method).WithField("request", id).Debug("request")
+	log := logrus.WithField("method", method)
+	log.Trace("[BEGIN]")
+	log.WithField("request", id).Debug("request")
 
 	db := a.DB.WithContext(ctx)
 
@@ -45,22 +46,24 @@ func (a *UserUseCase) GetById(ctx context.Context, id ulid.ULID) (*entity.User, 
 		panic(err)
 	}
 
-	a.Log.WithField("method", method).Trace("[END]")
+	a.Log.Trace("[END]")
 	return user, nil
 }
 
-func (a *UserUseCase) List(ctx context.Context) ([]entity.User, error) {
-	method := "UserUseCase.List"
-	a.Log.WithField("method", method).Trace("[BEGIN]")
-	a.Log.WithField("method", method).Debug("request")
+func GetByNIK(ctx context.Context, db *gorm.DB, nik string) (*entity.User, error) {
+	method := "UserUseCase.GetByNIK"
+	log := logrus.WithField("method", method)
+	log.Trace("[BEGIN]")
+	log.WithField("request", nik).Debug("request")
 
-	db := a.DB.WithContext(ctx)
-
-	users := make([]entity.User, 0)
-	if err := a.UserRepository.FindAll(db, &users); err != nil {
+	user := new(entity.User)
+	if err := db.WithContext(ctx).Where("nik = ?", nik).First(user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("user/not-found")
+		}
 		panic(err)
 	}
 
-	a.Log.WithField("method", method).Trace("[END]")
-	return users, nil
+	log.Trace("[END]")
+	return user, nil
 }

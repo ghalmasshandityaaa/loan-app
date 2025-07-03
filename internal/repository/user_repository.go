@@ -18,6 +18,6 @@ func NewUserRepository(log *logrus.Logger) *UserRepository {
 	}
 }
 
-func (r *UserRepository) GetByUsername(db *gorm.DB, user *entity.User, username string) error {
-	return db.Debug().Where("username = ?", username).Take(user).Error
+func (r *UserRepository) GetByNIK(db *gorm.DB, user *entity.User, nik string) error {
+	return db.Debug().Where("nik = ?", nik).Take(user).Error
 }
