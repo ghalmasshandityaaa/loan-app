@@ -22,5 +22,5 @@ func NewCustomerLimitRepository(log *logrus.Logger) *CustomerLimitRepository {
 }
 
 func (r *CustomerLimitRepository) ListUserLimits(db *gorm.DB, entities *[]entity.CustomerLimit, userID ulid.ULID) error {
-	return db.Debug().Find(entities).Where("user_id = ?", userID).Error
+	return db.Debug().Where("user_id = ?", userID).Find(entities).Error
 }

@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"fmt"
 	"time"
 
 	"loan-app/pkg/database/gorm"
@@ -42,4 +43,18 @@ func NewCustomerLimit(props *CreateCustomerLimitProps) *CustomerLimit {
 
 func (e *CustomerLimit) TableName() string {
 	return "customer_limits"
+}
+
+func (e *CustomerLimit) CreateTransaction(amount int64, userID gorm.ULID) error {
+	now := time.Now()
+
+	e.AvailableAmount -= amount
+	e.UsedAmount += amount
+	e.UpdatedAt = &now
+
+	if e.AvailableAmount < 0 || e.UsedAmount > e.LimitAmount {
+		return fmt.Errorf("customer-limit/insufficient-funds")
+	}
+
+	return nil
 }

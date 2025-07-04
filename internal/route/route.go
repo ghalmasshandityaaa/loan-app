@@ -8,13 +8,14 @@ import (
 )
 
 type Route struct {
-	App            *fiber.App
-	Log            *logrus.Logger
-	AuthMiddleware fiber.Handler
-	AuthHandler    *handler.AuthHandler
-	UserHandler    *handler.UserHandler
-	PartnerHandler *handler.PartnerHandler
-	AssetHandler   *handler.AssetHandler
+	App                *fiber.App
+	Log                *logrus.Logger
+	AuthMiddleware     fiber.Handler
+	AuthHandler        *handler.AuthHandler
+	UserHandler        *handler.UserHandler
+	PartnerHandler     *handler.PartnerHandler
+	AssetHandler       *handler.AssetHandler
+	TransactionHandler *handler.TransactionHandler
 }
 
 func NewRoute(
@@ -25,15 +26,17 @@ func NewRoute(
 	userHandler *handler.UserHandler,
 	partnerHandler *handler.PartnerHandler,
 	assetHandler *handler.AssetHandler,
+	transactionHandler *handler.TransactionHandler,
 ) *Route {
 	return &Route{
-		App:            app,
-		Log:            logger,
-		AuthMiddleware: authMiddleware,
-		AuthHandler:    authHandler,
-		UserHandler:    userHandler,
-		PartnerHandler: partnerHandler,
-		AssetHandler:   assetHandler,
+		App:                app,
+		Log:                logger,
+		AuthMiddleware:     authMiddleware,
+		AuthHandler:        authHandler,
+		UserHandler:        userHandler,
+		PartnerHandler:     partnerHandler,
+		AssetHandler:       assetHandler,
+		TransactionHandler: transactionHandler,
 	}
 }
 
@@ -44,5 +47,6 @@ func (a *Route) Setup() {
 	a.SetupUserRoute()
 	a.SetupPartnerRoute()
 	a.SetupAssetRoute()
+	a.SetupTransactionRoute()
 	a.SetupSwaggerRoute()
 }

@@ -211,6 +211,11 @@ This application has implemented several security features to protect against co
 * `POST /v1/asset`: Create asset
 * `GET /v1/asset`: Get asset lists
 
+### Transaction Endpoints
+
+* `POST /v1/transaction`: Create User Transaction
+* `GET /v1/transaction`: Get List User Transaction
+
 ### Swagger Endpoints
 
 * `GET /swagger/*`: Swagger documentation

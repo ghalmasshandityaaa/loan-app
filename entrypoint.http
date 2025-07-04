@@ -3,7 +3,7 @@ POST http://localhost:3000/v1/auth/sign-in
 Content-Type: application/json
 
 {
-    "nik": "1234123412341231",
+    "nik": "1234123412341233",
     "password": "Password123!@#"
 }
 
@@ -18,12 +18,12 @@ POST http://localhost:3000/v1/auth/sign-up
 Content-Type: application/json
 
 {
-    "nik": "1234123412341236",
+    "nik": "1234123412341233",
     "full_name": "John Doe",
     "legal_name": "Johnathan Doe",
     "date_of_birth": "1990-01-01",
     "place_of_birth": "Cityville",
-    "salary": 5000000,
+    "salary": 50000000,
     "id_card_photo_url": "http://example.com/id_card.jpg",
     "selfie_photo_url": "http://example.com/selfie.jpg",
     "password": "Password123!@#"
@@ -32,13 +32,13 @@ Content-Type: application/json
 ### Find User by ID
 GET http://localhost:3000/v1/user/me
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4NkRCWTZOWFJaUTNYSEU0WEJONUNYIiwiaXNfYWRtaW4iOnRydWUsImV4cCI6MTc1NDE1NTk0NCwiaWF0IjoxNzUxNTYzOTQ0fQ.AJsrOk5DQI_OR0T48eQPy1OHAqd0rV5s9ER4YY8wwP4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlpBMDlRSlZGUDg3WVg5Vk45NEM1WEdaIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQyMDA3OTMsImlhdCI6MTc1MTYwODc5M30.3kohJqFI4-LIOKMx0_arxJL2vW35FuU7w2ER0uaSIuY
 
 
 ### Find User Limits
 GET http://localhost:3000/v1/user/limit
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4Rk1HR1dBRjExR01RSzZLMk5CV1BZIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQxNDk4MjQsImlhdCI6MTc1MTU1NzgyNH0.jmAPIp-RyH45emuPZ5bhz-g7mfehiQZ_fhr1JlT5ToI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlpBMDlRSlZGUDg3WVg5Vk45NEM1WEdaIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQyMDA3OTMsImlhdCI6MTc1MTYwODc5M30.3kohJqFI4-LIOKMx0_arxJL2vW35FuU7w2ER0uaSIuY
 
 ### Find Partners
 GET http://localhost:3000/v1/partner
@@ -54,6 +54,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4RDhXQ
     "name": "Dealer 1",
     "type": "dealer"
 }
+
 ### Find Assets
 GET http://localhost:3000/v1/asset
 Content-Type: application/json
@@ -68,4 +69,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4NkRCW
     "name": "Asset Dealer 1",
     "price": 10000000,
     "partner_id": "01JZ8P0BE7KPHGD2WV8GAP6K1W"
+}
+
+### Find Transactions
+GET http://localhost:3000/v1/transaction
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlpBMDlRSlZGUDg3WVg5Vk45NEM1WEdaIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQyMDA3OTMsImlhdCI6MTc1MTYwODc5M30.3kohJqFI4-LIOKMx0_arxJL2vW35FuU7w2ER0uaSIuY
+
+### Create Transaction
+POST http://localhost:3000/v1/transaction
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlpBMDlRSlZGUDg3WVg5Vk45NEM1WEdaIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQyMDA3OTMsImlhdCI6MTc1MTYwODc5M30.3kohJqFI4-LIOKMx0_arxJL2vW35FuU7w2ER0uaSIuY
+
+{
+    "asset_id": "01JZ8RVRJED217DYYNH07H14JF",
+    "tenor": 1
 }
