@@ -39,7 +39,7 @@ func NewAssetUseCase(
 
 func (a *AssetUseCase) Create(ctx context.Context, id ulid.ULID, request *model.CreateAssetRequest) error {
 	method := "AssetUseCase.Create"
-	log := logrus.WithField("method", method)
+	log := a.Log.WithField("method", method)
 	log.Trace("[BEGIN]")
 	log.WithField("request", id).Debug("request")
 
@@ -74,7 +74,7 @@ func (a *AssetUseCase) Create(ctx context.Context, id ulid.ULID, request *model.
 
 func (a *AssetUseCase) Lists(ctx context.Context) ([]entity.Asset, error) {
 	method := "AssetUseCase.Lists"
-	log := logrus.WithField("method", method)
+	log := a.Log.WithField("method", method)
 	log.Trace("[BEGIN]")
 
 	db := a.DB.WithContext(ctx)

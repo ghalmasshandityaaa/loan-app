@@ -41,7 +41,7 @@ func NewTransactionUseCase(
 
 func (a *TransactionUseCase) Create(ctx context.Context, id ulid.ULID, request *model.CreateTransactionRequest) error {
 	method := "TransactionUseCase.Create"
-	log := logrus.WithField("method", method)
+	log := a.Log.WithField("method", method)
 	log.Trace("[BEGIN]")
 	log.WithField("request", id).Debug("request")
 
@@ -106,7 +106,7 @@ func (a *TransactionUseCase) Create(ctx context.Context, id ulid.ULID, request *
 
 func (a *TransactionUseCase) Lists(ctx context.Context, userID ulid.ULID) ([]entity.Transaction, error) {
 	method := "TransactionUseCase.Lists"
-	log := logrus.WithField("method", method)
+	log := a.Log.WithField("method", method)
 	log.Trace("[BEGIN]")
 
 	db := a.DB.WithContext(ctx)

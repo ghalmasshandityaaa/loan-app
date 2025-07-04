@@ -35,7 +35,7 @@ func NewUserUseCase(
 
 func (a *UserUseCase) GetById(ctx context.Context, id ulid.ULID) (*entity.User, error) {
 	method := "UserUseCase.GetById"
-	log := logrus.WithField("method", method)
+	log := a.Log.WithField("method", method)
 	log.Trace("[BEGIN]")
 	log.WithField("request", id).Debug("request")
 
@@ -55,7 +55,7 @@ func (a *UserUseCase) GetById(ctx context.Context, id ulid.ULID) (*entity.User, 
 
 func (a *UserUseCase) FindLimits(ctx context.Context, userID ulid.ULID) ([]entity.CustomerLimit, error) {
 	method := "UserUseCase.GetById"
-	log := logrus.WithField("method", method)
+	log := a.Log.WithField("method", method)
 	log.Trace("[BEGIN]")
 	log.WithField("request", userID).Debug("request")
 

@@ -33,7 +33,7 @@ func NewPartnerUseCase(
 
 func (a *PartnerUseCase) Create(ctx context.Context, id ulid.ULID, request *model.CreatePartnerRequest) error {
 	method := "PartnerUseCase.Create"
-	log := logrus.WithField("method", method)
+	log := a.Log.WithField("method", method)
 	log.Trace("[BEGIN]")
 	log.WithField("request", id).Debug("request")
 
@@ -58,7 +58,7 @@ func (a *PartnerUseCase) Create(ctx context.Context, id ulid.ULID, request *mode
 
 func (a *PartnerUseCase) Lists(ctx context.Context) ([]entity.Partner, error) {
 	method := "PartnerUseCase.Lists"
-	log := logrus.WithField("method", method)
+	log := a.Log.WithField("method", method)
 	log.Trace("[BEGIN]")
 
 	db := a.DB.WithContext(ctx)
