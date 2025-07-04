@@ -3,7 +3,7 @@ POST http://localhost:3000/v1/auth/sign-in
 Content-Type: application/json
 
 {
-    "nik": "1234123412341233",
+    "nik": "1234123412341234",
     "password": "Password123!@#"
 }
 
@@ -18,7 +18,7 @@ POST http://localhost:3000/v1/auth/sign-up
 Content-Type: application/json
 
 {
-    "nik": "1234123412341233",
+    "nik": "1234123412341234",
     "full_name": "John Doe",
     "legal_name": "Johnathan Doe",
     "date_of_birth": "1990-01-01",
@@ -58,7 +58,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4RDhXQ
 ### Find Assets
 GET http://localhost:3000/v1/asset
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlo4RDhXQ1RIN05FS1dNRVRWSkdUQUZFIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQxNTY0NjgsImlhdCI6MTc1MTU2NDQ2OH0.5WliJGP3JRNN6mv0KnghgqRH7_FkUoLws6jw3TELgzI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlpBMUhOVjA1UVNYM1lFM1BaQ0I3QkVUIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQyMDIwOTMsImlhdCI6MTc1MTYxMDA5M30.RdQXp_O17jFuDUgZ9xfRsW7n0aXmhvngjeIMT0wgqeE
 
 ### Create Asset
 POST http://localhost:3000/v1/asset
@@ -79,9 +79,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlpBMDlRS
 ### Create Transaction
 POST http://localhost:3000/v1/transaction
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlpBMDlRSlZGUDg3WVg5Vk45NEM1WEdaIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQyMDA3OTMsImlhdCI6MTc1MTYwODc5M30.3kohJqFI4-LIOKMx0_arxJL2vW35FuU7w2ER0uaSIuY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAxSlpBMUhOVjA1UVNYM1lFM1BaQ0I3QkVUIiwiaXNfYWRtaW4iOmZhbHNlLCJleHAiOjE3NTQyMDIwOTMsImlhdCI6MTc1MTYxMDA5M30.RdQXp_O17jFuDUgZ9xfRsW7n0aXmhvngjeIMT0wgqeE
 
 {
-    "asset_id": "01JZ8RVRJED217DYYNH07H14JF",
+    "asset_id": "01JZ8RVRJED217DYYNH07H14JK",
     "tenor": 1
 }

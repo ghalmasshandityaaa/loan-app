@@ -8,11 +8,19 @@ import (
 	"loan-app/internal/model"
 	"loan-app/internal/repository"
 	ulid "loan-app/pkg/database/gorm"
+	"sync"
+	"time"
 
 	v2 "github.com/oklog/ulid/v2"
 
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+)
+
+const (
+	DefaultTimeout    = 2 * time.Second
+	AssetFetchTimeout = 1 * time.Second
+	LimitFetchTimeout = 1 * time.Second
 )
 
 type TransactionUseCase struct {
@@ -45,28 +53,122 @@ func (a *TransactionUseCase) Create(ctx context.Context, id ulid.ULID, request *
 	log.Trace("[BEGIN]")
 	log.WithField("request", id).Debug("request")
 
+	// Create context with timeout
+	ctx, cancel := context.WithTimeout(ctx, DefaultTimeout)
+	defer cancel()
+
+	// Start database transaction
 	tx := a.DB.WithContext(ctx).Begin()
+	db := a.DB.WithContext(ctx)
 	defer tx.Rollback()
 
-	asset := new(entity.Asset)
-	if err := a.AssetRepository.FindById(tx, asset, ulid.ULID(v2.MustParse(request.AssetID))); err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return fmt.Errorf("asset/not-found")
+	// Use channels to collect results from goroutines
+	assetChan := make(chan *entity.Asset, 1)
+	limitsChan := make(chan []entity.CustomerLimit, 1)
+	errChan := make(chan error, 2)
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	// Goroutine 1: Fetch asset concurrently
+	go func() {
+		defer wg.Done()
+
+		// Create separate context with timeout for asset fetch
+		assetCtx, assetCancel := context.WithTimeout(ctx, AssetFetchTimeout)
+		defer assetCancel()
+
+		asset := new(entity.Asset)
+		assetID := ulid.ULID(v2.MustParse(request.AssetID))
+
+		if err := a.AssetRepository.FindById(db, asset, assetID); err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				errChan <- fmt.Errorf("asset/not-found")
+				return
+			}
+			log.WithError(err).Error("failed to find asset")
+			errChan <- fmt.Errorf("asset fetch failed: %w", err)
+			return
 		}
-		log.WithError(err).Error("failed to find asset")
-		panic(err)
+
+		select {
+		case assetChan <- asset:
+		case <-assetCtx.Done():
+			errChan <- fmt.Errorf("asset fetch timeout: %w", assetCtx.Err())
+		}
+	}()
+
+	// Goroutine 2: Fetch customer limits concurrently
+	go func() {
+		defer wg.Done()
+
+		// Create separate context with timeout for limits fetch
+		limitsCtx, limitsCancel := context.WithTimeout(ctx, LimitFetchTimeout)
+		defer limitsCancel()
+
+		limits := make([]entity.CustomerLimit, 0)
+
+		if err := a.CustomerLimitRepository.ListUserLimits(db, &limits, id); err != nil {
+			log.WithError(err).Error("failed to find user limit")
+			errChan <- fmt.Errorf("customer limits fetch failed: %w", err)
+			return
+		}
+
+		select {
+		case limitsChan <- limits:
+		case <-limitsCtx.Done():
+			errChan <- fmt.Errorf("limits fetch timeout: %w", limitsCtx.Err())
+		}
+	}()
+
+	// Wait for goroutines to complete or timeout
+	done := make(chan struct{})
+	go func() {
+		wg.Wait()
+		close(done)
+	}()
+
+	var asset *entity.Asset
+	var limits []entity.CustomerLimit
+
+	// Collect results with timeout handling
+	select {
+	case <-done:
+		// All goroutines completed, collect results
+		select {
+		case asset = <-assetChan:
+		default:
+			// Asset fetch failed, check error channel
+		}
+
+		select {
+		case limits = <-limitsChan:
+		default:
+			// Limits fetch failed, check error channel
+		}
+
+		// Check for any errors
+		select {
+		case err := <-errChan:
+			return err
+		default:
+			// No errors
+		}
+
+	case <-ctx.Done():
+		return fmt.Errorf("operation timeout: %w", ctx.Err())
 	}
 
-	limits := make([]entity.CustomerLimit, 0)
-	if err := a.CustomerLimitRepository.ListUserLimits(tx, &limits, id); err != nil {
-		log.WithError(err).Error("failed to find user limit")
-		panic(err)
+	// Validate results
+	if asset == nil {
+		return fmt.Errorf("asset/not-found")
 	}
 
 	if len(limits) == 0 {
 		return fmt.Errorf("customer-limit/not-found")
 	}
-	// find tenor limit
+
+	// Find tenor limit
 	var limit *entity.CustomerLimit
 	for _, l := range limits {
 		if l.Tenor == request.Tenor {
@@ -75,6 +177,11 @@ func (a *TransactionUseCase) Create(ctx context.Context, id ulid.ULID, request *
 		}
 	}
 
+	if limit == nil {
+		return fmt.Errorf("customer-limit/not-found")
+	}
+
+	// Create transaction entity
 	transaction, err := entity.NewTransaction(&entity.CreateTransactionProps{
 		UserID: id,
 		Asset:  asset,
@@ -82,7 +189,12 @@ func (a *TransactionUseCase) Create(ctx context.Context, id ulid.ULID, request *
 	})
 	if err != nil {
 		log.WithError(err).Error("failed to create transaction")
-		return err
+		panic(err)
+	}
+
+	// Perform database operations with context cancellation check
+	if err := ctx.Err(); err != nil {
+		panic("operation cancelled: " + err.Error())
 	}
 
 	if err := a.TransactionRepository.Create(tx, transaction); err != nil {
@@ -100,7 +212,7 @@ func (a *TransactionUseCase) Create(ctx context.Context, id ulid.ULID, request *
 		panic(err)
 	}
 
-	a.Log.Trace("[END]")
+	log.Trace("[END]")
 	return nil
 }
 
